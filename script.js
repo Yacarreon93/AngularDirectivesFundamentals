@@ -4,7 +4,9 @@ app.controller('mainCtrl', function ($scope) {
   $scope.user1 = {
     name: 'Luke',
     address: {
-      street: '123 Main St.'
+      street: '123 Main St.',
+      city: 'Aguascalientes',
+      planet: 'Earth'
     },
     friends: [
       'John',
@@ -14,14 +16,15 @@ app.controller('mainCtrl', function ($scope) {
   $scope.user2 = {
     name: 'Han',
     address: {
-      street: '123 Main St.'
+      street: '123 Main St.',
+      city: 'Mexico',
+      planet: 'Earth'
     },
     friends: [
       'Luke',
       'Chewbacca'
     ]
   }
-  console.log($scope)
 })
 
 app.directive('userInfoCard', function () {
@@ -32,11 +35,31 @@ app.directive('userInfoCard', function () {
     scope: {
       user: '='
     },
-    controller: function ($scope) {      
+    controller: function ($scope) {
+      $scope.collapsed = false  
       $scope.knightMe = function (user) {    
         user.rank = 'knight'
       }
-      console.log($scope)
+      $scope.collapse = function () {
+        $scope.collapsed = !$scope.collapsed
+      }
+    }
+  }
+})
+
+app.directive('address', function () {
+  return {
+    restrict: 'E',
+    templateUrl: 'templates/address.html',
+    scope: true,
+    controller: function ($scope) {
+      $scope.collapsed = false
+      $scope.collapseAddress = function () {
+        $scope.collapsed = true
+      }
+      $scope.expandAddress = function () {
+        $scope.collapsed = false
+      }
     }
   }
 })
