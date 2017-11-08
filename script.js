@@ -11,11 +11,18 @@ app.controller('mainCtrl', function ($scope) {
       'Carlos'
     ]
   }
+  console.log($scope)
 })
 
 app.directive('userInfoCard', function () {
   return {
     templateUrl: 'templates/userInfoCard.html',
-    restrict: 'E'
+    restrict: 'E',
+    controller: function ($scope) {      
+      $scope.knightMe = function (user) {    
+        user.rank = 'knight'
+      }
+      console.log($scope)
+    }
   }
 })
