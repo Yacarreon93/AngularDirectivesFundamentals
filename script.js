@@ -16,6 +16,6 @@ app.controller('mainCtrl', function ($scope) {
 app.directive('userInfoCard', function () {
   return {
     templateUrl: 'templates/userInfoCard.html',
-    restrict: 'A'
+    restrict: 'E'
   }
 })
