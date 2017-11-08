@@ -5,13 +5,17 @@ app.controller('mainCtrl', function ($scope) {
     name: 'Luke',
     address: {
       street: '123 Main St.'
-    }
+    },
+    friends: [
+      'John',
+      'Carlos'
+    ]
   }
 })
 
 app.directive('userInfoCard', function () {
   return {
-    template: 'Name: {{ user.name }}<br>Address: {{ user.address.street}}<br>',
+    templateUrl: 'templates/userInfoCard.html',
     restrict: 'A'
   }
 })
