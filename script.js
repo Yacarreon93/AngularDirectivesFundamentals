@@ -10,7 +10,7 @@ app.controller('mainCtrl', function ($scope) {
     },
     friends: [
       'John',
-      'Carlos'
+      'Han'
     ]
   },
   $scope.user2 = {
@@ -33,15 +33,46 @@ app.directive('userInfoCard', function () {
     restrict: 'E',
     // scope: true, // internal scope
     scope: {
-      user: '='
+      user: '=',
+      initialCollapsed: '@collapsed'
     },
     controller: function ($scope) {
-      $scope.collapsed = false  
+      // $scope.collapsed = false
+      $scope.collapsed = ($scope.initialCollapsed === 'true')
       $scope.knightMe = function (user) {    
         user.rank = 'knight'
       }
       $scope.collapse = function () {
         $scope.collapsed = !$scope.collapsed
+      }
+      $scope.removeFriend = function (friend) {
+        var idx = $scope.user.friends.indexOf(friend)
+        if (idx > -1) {
+          $scope.user.friends.splice(idx, 1)
+        }
+      }
+    }
+  }
+})
+
+app.directive('removeFriend', function () {
+  return {
+    restrict: 'E',
+    templateUrl: 'templates/removeFriend.html',
+    scope: {
+      notifyParent: '&method'
+    },
+    controller: function ($scope) {
+      $scope.removing = false
+      $scope.startRemove = function () {
+        $scope.removing = true
+      }
+      $scope.cancelRemove = function () {
+        $scope.removing = false
+      }
+      $scope.confirmRemove = function () {
+        $scope.notifyParent()
+        // $scope.notifyParent({ friend: 'Han' })
       }
     }
   }
