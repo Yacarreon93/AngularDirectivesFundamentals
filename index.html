@@ -36,10 +36,16 @@
         {{ message.text }}
       </div>
     </div>
+
+    <div ng-controller="mainCtrl3" my-click="clickHandler(data)">
+      <h1>Hello</h1>
+      <h2>{{ data.message }}</h2>
+    </div>
           
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
     <script src="script.js"></script>
     <script src="script2.js"></script>
+    <script src="script3.js"></script>
 
   </body>
 </html>
