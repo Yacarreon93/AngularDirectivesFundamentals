@@ -33,7 +33,8 @@ app.controller('mainCtrl', function ($scope) {
       manufacturer: 'Industrial Automaton',
       type: 'Astromech',
       productLine: 'R2 series'
-    }
+    },
+    level: 1
   }
 })
 
@@ -51,6 +52,46 @@ app.directive('stateDisplay', function () {
   }
 })
 
+app.directive('userPanel', function () {
+  return {
+    restrict: 'E',
+    transclude: true,
+    templateUrl: 'templates/userPanel.html',
+    scope: {
+      name: '@',
+      level: '=',
+      initialCollapsed: '@collapsed'
+    }, 
+    controller: function ($scope) {
+      // $scope.collapsed = false
+      $scope.collapsed = ($scope.initialCollapsed === 'true')
+      $scope.nextState = function (evt) {
+        evt.stopPropagation()
+        evt.preventDefault()
+        $scope.level++
+        $scope.level = $scope.level % 4
+      }
+      $scope.collapse = function () {
+        $scope.collapsed = !$scope.collapsed
+      }
+    }
+  }
+})
+
+app.directive('droidInfoCard', function () {
+  return {
+    templateUrl: 'templates/droidInfoCard.html',
+    restrict: 'E',
+    // scope: true, // internal scope
+    scope: {
+      droid: '=',
+      initialCollapsed: '@collapsed'
+    },
+    controller: function ($scope) {          
+    }
+  }
+})
+
 app.directive('personInfoCard', function () {
   return {
     templateUrl: 'templates/personInfoCard.html',
@@ -60,19 +101,10 @@ app.directive('personInfoCard', function () {
       person: '=',
       initialCollapsed: '@collapsed'
     },
-    controller: function ($scope) {
-      // $scope.collapsed = false
-      $scope.collapsed = ($scope.initialCollapsed === 'true')
-      $scope.nextState = function () {
-        $scope.person.level++
-        $scope.person.level = $scope.person.level % 4
-      }
+    controller: function ($scope) {      
       $scope.knightMe = function (person) {    
         person.rank = 'knight'
-      }
-      $scope.collapse = function () {
-        $scope.collapsed = !$scope.collapsed
-      }
+      }     
       $scope.removeFriend = function (friend) {
         var idx = $scope.person.friends.indexOf(friend)
         if (idx > -1) {
