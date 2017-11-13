@@ -1,7 +1,7 @@
 var app = angular.module('app', [])
 
 app.controller('mainCtrl', function ($scope) {
-  $scope.user1 = {
+  $scope.person1 = {
     name: 'Luke',
     address: {
       street: '123 Main St.',
@@ -14,7 +14,7 @@ app.controller('mainCtrl', function ($scope) {
     ],
     level: 0
   },
-  $scope.user2 = {
+  $scope.person2 = {
     name: 'Han',
     address: {
       street: '123 Main St.',
@@ -26,6 +26,14 @@ app.controller('mainCtrl', function ($scope) {
       'Chewbacca'
     ],
     level: 2
+  }
+  $scope.droid1 = {
+    name: 'R2-D2',
+    specifications: {
+      manufacturer: 'Industrial Automaton',
+      type: 'Astromech',
+      productLine: 'R2 series'
+    }
   }
 })
 
@@ -43,32 +51,32 @@ app.directive('stateDisplay', function () {
   }
 })
 
-app.directive('userInfoCard', function () {
+app.directive('personInfoCard', function () {
   return {
-    templateUrl: 'templates/userInfoCard.html',
+    templateUrl: 'templates/personInfoCard.html',
     restrict: 'E',
     // scope: true, // internal scope
     scope: {
-      user: '=',
+      person: '=',
       initialCollapsed: '@collapsed'
     },
     controller: function ($scope) {
       // $scope.collapsed = false
       $scope.collapsed = ($scope.initialCollapsed === 'true')
       $scope.nextState = function () {
-        $scope.user.level++
-        $scope.user.level = $scope.user.level % 4
+        $scope.person.level++
+        $scope.person.level = $scope.person.level % 4
       }
-      $scope.knightMe = function (user) {    
-        user.rank = 'knight'
+      $scope.knightMe = function (person) {    
+        person.rank = 'knight'
       }
       $scope.collapse = function () {
         $scope.collapsed = !$scope.collapsed
       }
       $scope.removeFriend = function (friend) {
-        var idx = $scope.user.friends.indexOf(friend)
+        var idx = $scope.person.friends.indexOf(friend)
         if (idx > -1) {
-          $scope.user.friends.splice(idx, 1)
+          $scope.person.friends.splice(idx, 1)
         }
       }
     }
