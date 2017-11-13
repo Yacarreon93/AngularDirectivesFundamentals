@@ -24,8 +24,8 @@
     
     <div ng-controller="mainCtrl" class="container">
       <h1>Bounty Hunters</h1>
-      <div my-repeat="hunter in bountyHunters">
-        <span>Name: {{ hunter.name }}</span>
+      <div user-list="hunter in bountyHunters">
+        <span>Age: {{ hunter.age }}</span>
       </div>
       <button class="btn btn-rpimary" ng-click="add()">Add</button>
       <button class="btn btn-rpimary" ng-click="remove()">Remove</button>

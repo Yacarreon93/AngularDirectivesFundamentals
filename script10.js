@@ -2,9 +2,9 @@ var app = angular.module('app', [])
 
 app.controller('mainCtrl', function ($scope) {
   $scope.bountyHunters = [
-    { name: 'Boba Fett' },
-    { name: 'IG-88' },
-    { name: 'Dengar' },
+    { name: 'Boba Fett', age: 12 },
+    { name: 'IG-88', age: 13 },
+    { name: 'Dengar', age: 11 },
   ]
   $scope.add = function () {
     $scope.bountyHunters.push({ name: 'Bossk' })
@@ -14,12 +14,12 @@ app.controller('mainCtrl', function ($scope) {
   }
 })
 
-app.directive('myRepeat', function () {
+app.directive('userList', function ($compile) {
   return {
     restrict: 'A',
     transclude: 'element',
     link: function (scope, el, attr, ctrl, transclude) {
-      var pieces = attr.myRepeat.split(' ')
+      var pieces = attr.userList.split(' ')
       var itemString = pieces[0]
       var collectionName = pieces[2]
       var elements = []
@@ -36,9 +36,12 @@ app.directive('myRepeat', function () {
           var childScope = scope.$new()
           childScope[itemString] = collection[index]
           transclude(childScope, function (clone) {
-            el.before(clone)
+            var template = $compile('<div class="panel panel-primary"><div class="panel panel-heading">{{ ' + itemString + '.name }}</div><div class="panel panel-body"></div></div>')
+            var wrapper = template(childScope)
+            wrapper.find('.panel-body').append(clone)
+            el.before(wrapper)
             var item = {}
-            item.el = clone
+            item.el = wrapper
             item.scope = childScope
             elements.push(item)
           })
