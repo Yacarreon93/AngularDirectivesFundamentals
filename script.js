@@ -101,14 +101,16 @@ app.directive('personInfoCard', function () {
       person: '=',
       initialCollapsed: '@collapsed'
     },
-    controller: function ($scope) {      
-      $scope.knightMe = function (person) {    
+    controllerAs: 'vm',
+    bindToController: true,
+    controller: function () {      
+      this.knightMe = function (person) {    
         person.rank = 'knight'
       }     
-      $scope.removeFriend = function (friend) {
-        var idx = $scope.person.friends.indexOf(friend)
+      this.removeFriend = function (friend) {
+        var idx = this.person.friends.indexOf(friend)
         if (idx > -1) {
-          $scope.person.friends.splice(idx, 1)
+          this.person.friends.splice(idx, 1)
         }
       }
     }
