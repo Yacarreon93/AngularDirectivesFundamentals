@@ -36,12 +36,13 @@ app.directive('vader', function () {
 app.directive('starkiller', function () {
   return {
     scope: true,
-    require: '?^^vader',
-    link: function (scope, el, attrs, vaderCtrl) {
+    require: ['?^^vader', '^emperor'],
+    link: function (scope, el, attrs, ctrls) {
       el.data('name', 'Starkiller')
-      if (vaderCtrl) {
-        el.data('master', vaderCtrl.name)
-        console.log('Starkiller - My master is ' + vaderCtrl.name)
+      if (ctrls[0]) {
+        el.data('master', ctrls[0].name)
+        console.log('Starkiller - My master is ' + ctrls[0].name)
+        console.log('Starkiller\' master\'s master is ' + ctrls[1].name)
       } else {
         console.log('Starkiller doesn\'t have a master')
       }
