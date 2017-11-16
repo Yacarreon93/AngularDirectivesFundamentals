@@ -1,4 +1,4 @@
-var app = angular.module('app', [])
+var app = angular.module('app', ['ui.bootstrap'])
 
 app.controller('mainCtrl', function ($scope) {
   $scope.person1 = {
@@ -41,61 +41,19 @@ app.controller('mainCtrl', function ($scope) {
     },
     level: 1
   }
-})
-
-app.directive('stateDisplay', function () {
-  return {
-    link: function (scope, el, attrs) {
-      var parms = attrs['stateDisplay'].split(' ')
-      var linkVar = parms[0]
-      var classes = parms.slice(1)
-      scope.$watch(linkVar, function (newVal) {
-        el.removeClass(classes.join(' '))
-        el.addClass(classes[newVal])
-      })
-    }
+  $scope.openModal = function () {
+    $scope.modalOpen = true
+  }
+  $scope.closeModal = function (response) {
+    $scope.modalOpen = false
+    console.log('modal closed', response)
+  }
+  $scope.modalClosed = function (response) {
+    $scope.closeModal('no')
   }
 })
 
-app.directive('userPanel', function () {
-  return {
-    restrict: 'E',
-    transclude: true,
-    templateUrl: 'templates/userPanel.html',
-    scope: {
-      name: '@',
-      level: '=',
-      initialCollapsed: '@collapsed'
-    }, 
-    controller: function ($scope) {
-      // $scope.collapsed = false
-      $scope.collapsed = ($scope.initialCollapsed === 'true')
-      $scope.nextState = function (evt) {
-        evt.stopPropagation()
-        evt.preventDefault()
-        $scope.level++
-        $scope.level = $scope.level % 4
-      }
-      $scope.collapse = function () {
-        $scope.collapsed = !$scope.collapsed
-      }
-    }
-  }
-})
-
-app.directive('droidInfoCard', function () {
-  return {
-    templateUrl: 'templates/droidInfoCard.html',
-    restrict: 'E',
-    // scope: true, // internal scope
-    scope: {
-      droid: '=',
-      initialCollapsed: '@collapsed'
-    },
-    controller: function ($scope) {          
-    }
-  }
-})
+// Services
 
 app.factory('jediPolicy', function ($q) {
   return {
@@ -119,19 +77,71 @@ app.factory('jediPolicy', function ($q) {
   }
 })
 
+// Directives
+
+app.directive('userPanel', function () {
+  return {
+    restrict: 'E',
+    transclude: true,
+    templateUrl: 'templates/userPanel.html',
+    scope: {
+      name: '@',
+      level: '=',
+      initialCollapsed: '@collapsed'
+    }, 
+    controller: function ($scope) {
+      $scope.collapsed = ($scope.initialCollapsed === 'true')
+      $scope.nextState = function (evt) {
+        evt.stopPropagation()
+        evt.preventDefault()
+        $scope.level++
+        $scope.level = $scope.level % 4
+      }
+      $scope.collapse = function () {
+        $scope.collapsed = !$scope.collapsed
+      }
+    }
+  }
+})
+
+app.directive('droidInfoCard', function () {
+  return {
+    templateUrl: 'templates/droidInfoCard.html',
+    restrict: 'E',
+    scope: {
+      droid: '=',
+      initialCollapsed: '@collapsed'
+    }
+  }
+})
+
 app.directive('personInfoCard', function (jediPolicy) {
   return {
     templateUrl: 'templates/personInfoCard.html',
     restrict: 'E',
-    // scope: true, // internal scope
     scope: {
       person: '=',
       initialCollapsed: '@collapsed'
     },
     controllerAs: 'vm',
     bindToController: true,
-    controller: function () {      
+    controller: function ($modal) {    
+      var that = this  
       this.knightMe = function (person) {
+        var modalInstance = $modal.open({
+          templateUrl: 'templates/knightConfirmation.html',
+          controller: 'knightConfirmationCtrl',
+          resolve: {
+            person: function () {
+              return that.person
+            }
+          }
+        })
+        modalInstance.result.then(function (answer) {
+          if (answer) {
+            that.person.rank = 'Jedi Knight'
+          }
+        })
         this.showKnightModal = true
       }
       this.knightDialogDone = function (response) {
@@ -145,29 +155,6 @@ app.directive('personInfoCard', function (jediPolicy) {
         if (idx > -1) {
           this.person.friends.splice(idx, 1)
         }
-      }
-    }
-  }
-})
-
-app.directive('removeFriend', function () {
-  return {
-    restrict: 'E',
-    templateUrl: 'templates/removeFriend.html',
-    scope: {
-      notifyParent: '&method'
-    },
-    controller: function ($scope) {
-      $scope.removing = false
-      $scope.startRemove = function () {
-        $scope.removing = true
-      }
-      $scope.cancelRemove = function () {
-        $scope.removing = false
-      }
-      $scope.confirmRemove = function () {
-        $scope.notifyParent()
-        // $scope.notifyParent({ friend: 'Han' })
       }
     }
   }
@@ -231,5 +218,15 @@ app.directive('modal', function ($document) {
         'height': pageHeight + 'px'
       })
     }
+  }
+})
+
+app.controller('knightConfirmationCtrl', function ($scope, $modalInstance, person) {
+  $scope.person = person
+  $scope.yes = function () {
+    $modalInstance.close(true)
+  }
+  $scope.no = function () {
+    $modalInstance.close(false)
   }
 })
